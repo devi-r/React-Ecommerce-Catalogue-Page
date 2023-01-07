@@ -10,15 +10,33 @@ Create the Myntra Catalogue Page with the following capabilities :
 
 Demo : https://react-myntra-catalogue-page.onrender.com
 
-## How to run
+## Getting Started
+### Prerequisites
 
-In the project directory, you can run:
+A stable version of node installed in the system (preferably the latest.)
 
-### `npm install`
+### Installing
 
-to install all node modules and then
+Clone the repo from github.
 
-### `npm start`
+```
+git clone <repo-url>
+```
+Go to the project home directory on the cloned repo and install the packages (packages are listed in the packages.json file) by executing.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+```
+npm install
+```
+Run the project locally by:
+```
+npm start
+```
+This will host the project at default localhost:3000. Please open a web browser and direct to that link to see everything.
+
+## Author
+
+* **DEVI R** - *Initial work* - [Devi R](https://www.linkedin.com/in/devi-r-06bb94a7)
+
+## License
+
+This project is licensed under the MIT License.
