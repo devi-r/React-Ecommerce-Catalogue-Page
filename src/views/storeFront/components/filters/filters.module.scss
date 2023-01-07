@@ -1,0 +1,98 @@
+.filtersContainer {
+  height: 100%;
+  border-top: none;
+  background-color: #ffffff;
+  position: relative;
+
+  &.filterPopupContainer {
+    width: 100%;
+    min-width: unset;
+    height: 100%;
+    display: block;
+    text-align: left;
+    padding: 0px;
+    border: none;
+  }
+
+  .popupClose {
+    cursor: pointer;
+    font-size: 20px;
+    text-align: right;
+    margin: 16px;
+  }
+
+  .filterHeader {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+    padding-bottom: 15px;
+    padding-left: 25px;
+    border-bottom: 1px solid #e9e9ed;
+
+    .headerLabel {
+      font-size: 16px;
+      font-weight: 700;
+      color: #222222;
+      margin-right: auto;
+    }
+
+    .filterAction {
+      margin: 0 12px 0 auto;
+      cursor: pointer;
+      font-weight: 600;
+      color: #ff3f6c;
+      font-size: 13px;
+      cursor: pointer;
+    }
+  }
+
+  .filterLabelContainer {
+    .filterLabel {
+      font-weight: 500;
+      text-transform: uppercase;
+      font-size: 14px;
+      margin: 0 0 18px;
+      clear: both;
+      color: #282c3f;
+      display: block;
+      text-align: left;
+    }
+  }
+
+  .filterItemsContainer {
+    padding-bottom: 15px;
+    border-right: 1px solid #e9e9ed;
+    .filterItemWrapper {
+      border-bottom: 1px solid #e9e9ed;
+      .filterItem {
+        padding: 16px 0 16px 16px;
+      }
+    }
+    .filterListContainer {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+
+      .listItem {
+      }
+    }
+
+    .filterMultiSelect {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: flex-start;
+      max-height: 153px;
+      overflow: hidden auto;
+    }
+    .remainingCount {
+      cursor: pointer;
+      margin-top: 10px;
+      font-size: 14px;
+      color: #ff3f6c;
+      margin-left: 27px;
+      text-align: left;
+    }
+  }
+}

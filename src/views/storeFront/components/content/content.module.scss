@@ -1,0 +1,52 @@
+.container {
+  display: flex;
+  width: 100%;
+  padding-top: 12px;
+  min-height: calc(100vh - 280px);
+
+  &.grid {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: stretch;
+    align-content: stretch;
+    margin: 0 -10px 0 3px;
+    justify-content: space-between;
+    flex-flow: row wrap;
+    &::after {
+      content: "";
+      flex: auto;
+    }
+  }
+
+  &.list {
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+  }
+
+  &.zeroState {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    .zeroStateText {
+      font-size: 34px;
+      width: 100%;
+    }
+  }
+
+  .dummyCard {
+    width: 210px;
+    text-align: left;
+    position: relative;
+    vertical-align: top;
+    overflow: hidden;
+    display: inline-block;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    margin: 0 10px 30px;
+    @media (max-width: 768px) {
+      width: 180px;
+      margin: 0 0 30px;
+    }
+  }
+}

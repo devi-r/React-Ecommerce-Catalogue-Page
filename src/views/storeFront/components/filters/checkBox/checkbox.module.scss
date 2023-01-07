@@ -1,0 +1,49 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  margin-bottom: 7px;
+  .listItem {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    cursor: pointer;
+    .inputCheckbox {
+      margin-right: 16px;
+      cursor: pointer;
+    }
+    .checkboxLabel {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+
+      .value {
+        max-width: 150px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+        line-height: 1.1;
+        cursor: pointer;
+        color: #282c3f;
+        font-size: 12px;
+      }
+      .count {
+        color: #94969f;
+        font-size: 11px;
+        margin-left: 4px;
+        max-width: 80px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+      }
+      .meta {
+        content: "";
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        margin-right: 8px;
+      }
+    }
+  }
+}

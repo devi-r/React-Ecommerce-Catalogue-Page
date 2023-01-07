@@ -1,0 +1,252 @@
+.container {
+  width: 210px;
+  text-align: left;
+  position: relative;
+  vertical-align: top;
+  overflow: hidden;
+  display: inline-block;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  margin: 0 10px 30px;
+  cursor: pointer;
+  height: 300px;
+  overflow: hidden;
+  z-index: 1;
+  @media (max-width: 768px) {
+    width: 180px;
+    margin: 0 0 30px;
+  }
+
+  @media (max-width: 320px) {
+    width: 100%;
+  }
+
+  &:hover {
+    box-shadow: 0 2px 16px 4px rgb(40 44 63 / 7%);
+  }
+
+  @media (max-width: 768px) {
+    box-shadow: 0 2px 16px 4px rgb(40 44 63 / 7%);
+  }
+  .imageWrapper {
+    height: 280px;
+    width: 100%;
+    position: relative;
+    @media (max-width: 768px) {
+      height: 200px;
+    }
+    img {
+      width: auto;
+      height: 100%;
+      position: absolute;
+      left: 0;
+      right: 0;
+      margin: 0 auto;
+    }
+    z-index: 2;
+
+    .tag {
+      background: rgba(255, 63, 108, 0.8);
+      display: inline-block;
+      position: absolute;
+      top: 16px;
+      left: 0;
+      text-transform: uppercase;
+      color: #fff;
+      font-size: 10px;
+      font-weight: 500;
+      z-index: 1;
+      padding: 0 4px;
+      line-height: 16px;
+
+      &::after {
+        content: "";
+        position: absolute;
+        border-color: rgba(255, 63, 108, 0.5) transparent
+          rgba(255, 63, 108, 0.5) rgba(255, 63, 108, 0.8);
+        border-style: solid;
+        border-width: 8px;
+        left: 100%;
+        width: 0;
+        height: 0;
+        top: 0;
+      }
+    }
+
+    .ratingsContainer {
+      height: 24px;
+      z-index: 4;
+      position: absolute;
+      bottom: 10px;
+      left: 10px;
+      font-size: 12px;
+      font-weight: 500;
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-box-align: center;
+      -ms-flex-align: center;
+      align-items: center;
+      -webkit-box-pack: center;
+      -ms-flex-pack: center;
+      justify-content: center;
+      border-radius: 2px;
+      padding: 0 4px;
+      background-color: hsla(0, 0%, 100%, 0.8);
+
+      .star {
+        color: #13958e;
+        margin: 0 4px;
+      }
+    }
+  }
+  .metaWrapper {
+    position: absolute;
+    width: 100%;
+    left: 0;
+    right: 0;
+    z-index: 3;
+    background: #fff;
+    padding: 0 10px;
+    margin-top: 12px;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    overflow: hidden;
+    bottom: 0;
+    z-index: 3;
+    padding-top: 12px;
+
+    .wishlistButton {
+      width: 100%;
+      box-shadow: none;
+      background-color: #ffffff;
+      padding: 6px 12px;
+      height: 32px;
+      border: 1px solid #cccccc;
+      text-align: center;
+      box-sizing: border-box;
+      cursor: pointer;
+      margin-bottom: 8px;
+      &:hover {
+        border: 1px solid #000000;
+      }
+    }
+    .sizes {
+      font-size: 14px;
+      color: #535665;
+      line-height: 1;
+      margin-top: 0;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      padding: 0;
+      margin-bottom: 0;
+      font-weight: 400;
+    }
+    .brand {
+      font-size: 16px;
+      font-weight: 500;
+      line-height: 1;
+      color: #282c3f;
+      margin-bottom: 6px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .product {
+      color: #535766;
+      font-size: 14px;
+      line-height: 1;
+      margin-bottom: 0;
+      margin-top: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-weight: 400;
+      display: block;
+    }
+    .price {
+      font-size: 14px;
+      line-height: 15px;
+      color: #282c3f;
+      white-space: nowrap;
+      margin: 10px 0 6px;
+      font-weight: 500;
+      .discountedPrice {
+        font-size: 14px;
+        font-weight: 500;
+        color: #282c3f;
+      }
+      .strikedPrice {
+        text-decoration: line-through;
+        color: #7e818c;
+        font-weight: 400;
+        margin-left: 5px;
+        font-size: 12px;
+      }
+      .discountPercentage {
+        color: #ff905a;
+        font-weight: 400;
+        font-size: 12px;
+        margin-left: 5px;
+        @media (max-width: 768px) {
+          display: none;
+        }
+      }
+    }
+  }
+
+  &.list {
+    display: flex;
+    justify-content: flex-start;
+    width: 100%;
+    height: 100px;
+    .imageWrapper {
+      width: 120px;
+      height: 100px;
+      display: flex;
+      position: relative;
+
+      .tag {
+        top: 0px;
+        font-size: 8px;
+      }
+
+      .ratingsContainer {
+        bottom: 0;
+        left: 0;
+        right: 0;
+        margin: 0 auto;
+      }
+    }
+    .metaWrapper {
+      position: relative;
+      padding: 0 0 0 24px;
+      .togglingMeta {
+        display: flex;
+        flex-direction: column-reverse;
+      }
+      .wishlistButton {
+        margin: auto 0;
+        width: 200px;
+        margin-right: 16px;
+        border-radius: 16px;
+        background-color: #ff3f6c;
+        border: none;
+        color: #ffffff;
+        font-weight: bold;
+        @media (max-width: 768px) {
+          display: none;
+        }
+      }
+
+      .textWrapper {
+        display: flex;
+        justify-content: space-between;
+        @media (max-width: 768px) {
+          display: unset;
+        }
+      }
+    }
+  }
+}
