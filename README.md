@@ -8,7 +8,7 @@ Create the Myntra Catalogue Page with the following capabilities :
 - Paginated views
 - Ability to view items in grid or list
 
-Demo : https://react-myntra-catalogue-page.onrender.com/
+Demo : https://react-myntra-catalogue-page.onrender.com
 
 ## How to run
 
