@@ -1,27 +1,28 @@
 .container {
-  display: flex;
+  display: grid;
   width: 100%;
   padding-top: 12px;
   min-height: calc(100vh - 280px);
+  gap: 20px;
 
   &.grid {
-    flex-direction: row;
-    flex-wrap: wrap;
-    align-items: stretch;
-    align-content: stretch;
-    margin: 0 -10px 0 3px;
-    justify-content: space-between;
-    flex-flow: row wrap;
-    &::after {
-      content: "";
-      flex: auto;
-    }
-  }
+    // Desktop: 5 columns
+    grid-template-columns: repeat(5, 1fr);
 
-  &.list {
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: flex-start;
+    // Large tablet: 4 columns
+    @media (max-width: 1200px) {
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    // Tablet: 3 columns
+    @media (max-width: 992px) {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    // Small tablet: 2 columns
+    @media (max-width: 768px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
   }
 
   &.zeroState {
@@ -35,18 +36,6 @@
   }
 
   .dummyCard {
-    width: 210px;
-    text-align: left;
-    position: relative;
-    vertical-align: top;
-    overflow: hidden;
-    display: inline-block;
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
-    margin: 0 10px 30px;
-    @media (max-width: 768px) {
-      width: 180px;
-      margin: 0 0 30px;
-    }
+    display: none; // Not needed with CSS Grid
   }
 }

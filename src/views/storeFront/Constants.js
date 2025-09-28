@@ -1,6 +1,4 @@
-export const PAGE_SIZE = 10;
-
-export const CARD_VIEWS = ["GRID", "LIST"];
+export const PAGE_SIZE = 20;
 
 export const FILTER_DATA = {
   header: "FILTERS",

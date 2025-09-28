@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext, useRef } from "react";
 import { PAGE_SIZE, GENDER } from "./Constants";
 import { DataService } from "./DataService";
 import { usePrevious } from "./hooks/usePrevious";
@@ -14,24 +14,28 @@ const StoreFront = () => {
       filtersData = {},
       selectedFilters = {},
       sortBy,
+      isLoading = true,
     },
     dispatch,
   } = useContext(context);
 
-  const [contentView, setContentView] = useState("grid");
   const [showFilters, setShowFilters] = useState(false);
+  const isInitialLoadRef = useRef(true);
 
   const prevSelectedFilters = usePrevious(selectedFilters);
 
-  const handleCurrentContent = (allData, page) => {
+  const handleCurrentContent = (allData, page, pageSize = 20) => {
     const newData = allData?.slice(
-      (page - 1) * PAGE_SIZE,
-      (page - 1) * PAGE_SIZE + PAGE_SIZE
+      (page - 1) * pageSize,
+      (page - 1) * pageSize + pageSize
     );
     dispatch({ type: actions.SET_CURRENT_CONTENT, payload: newData });
   };
 
   useEffect(() => {
+    if (isInitialLoadRef.current) {
+      dispatch({ type: actions.SET_LOADING, payload: true });
+    }
     DataService.getAllData({ selectedFilters }).then((response) => {
       const allData = selectedFilters?.gender
         ? response?.data?.data
@@ -88,6 +92,14 @@ const StoreFront = () => {
           type: actions.SET_SELECTED_FILTERS,
           payload: { gender: selectedFilters.gender },
         });
+
+        // Add 2 second delay only for initial load
+        if (isInitialLoadRef.current) {
+          setTimeout(() => {
+            dispatch({ type: actions.SET_LOADING, payload: false });
+            isInitialLoadRef.current = false;
+          }, 2000);
+        }
       });
     });
   }, [selectedFilters.gender]);
@@ -115,9 +127,10 @@ const StoreFront = () => {
                     ? value?.indexOf(item[key]) >= 0
                     : value === item[key];
                 } else if (key === "discount") {
-                  const discountItem = filtersData?.filterItems?.discount?.filterValues?.find(
-                    (e) => e.id === value
-                  );
+                  const discountItem =
+                    filtersData?.filterItems?.discount?.filterValues?.find(
+                      (e) => e.id === value
+                    );
                   const discountPercentage = (item.discount / item.mrp) * 100;
 
                   return (
@@ -171,10 +184,6 @@ const StoreFront = () => {
       !isEmpty(selectedFilters) &&
       Object.values(selectedFilters)?.filter((e) => !isEmpty(e))?.length !== 0;
     handleCurrentContent(filterApplied ? allFilteredContent : allContent, page);
-  };
-
-  const handleToggleView = (view) => {
-    setContentView(view);
   };
 
   const handleFilterClick = (filterItem, value) => {
@@ -232,14 +241,13 @@ const StoreFront = () => {
     <StoreFrontView
       handlers={{
         handlePageChange,
-        handleToggleView,
         handleFilterClick,
         handleFilterClearAll,
         handleSortBy,
         handleMobileFilters,
       }}
-      contentView={contentView}
       showFilters={showFilters}
+      isLoading={isLoading}
     />
   );
 };

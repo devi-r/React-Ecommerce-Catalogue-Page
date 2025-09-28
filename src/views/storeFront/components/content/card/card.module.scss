@@ -1,25 +1,15 @@
 .container {
-  width: 210px;
+  width: 100%;
   text-align: left;
   position: relative;
-  vertical-align: top;
   overflow: hidden;
-  display: inline-block;
+  display: block;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
-  margin: 0 10px 30px;
   cursor: pointer;
   height: 300px;
   overflow: hidden;
   z-index: 1;
-  @media (max-width: 768px) {
-    width: 180px;
-    margin: 0 0 30px;
-  }
-
-  @media (max-width: 320px) {
-    width: 100%;
-  }
 
   &:hover {
     box-shadow: 0 2px 16px 4px rgb(40 44 63 / 7%);
@@ -228,13 +218,17 @@
       }
       .wishlistButton {
         margin: auto 0;
-        width: 200px;
+        width: fit-content;
+        padding: 6px 12px;
         margin-right: 16px;
-        border-radius: 16px;
-        background-color: #ff3f6c;
-        border: none;
-        color: #ffffff;
+        border-radius: 10px;
+        background-color: white;
+        border: 1px solid #ff3f6c;
+        color: #ff3f6c;
         font-weight: bold;
+        &:hover {
+          opacity: 0.8;
+        }
         @media (max-width: 768px) {
           display: none;
         }

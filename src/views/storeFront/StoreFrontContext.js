@@ -9,6 +9,7 @@ const initialState = {
   filtersData: { ...FILTER_DATA },
   selectedFilters: {},
   sortBy: sortOptions?.[2],
+  isLoading: true,
 };
 const context = createContext(initialState);
 const { Provider } = context;
@@ -21,6 +22,7 @@ const actions = {
   SET_FILTERS_DATA: "SET_FILTERS_DATA",
   SET_SELECTED_FILTERS: "SET_SELECTED_FILTERS",
   SET_SORT_BY: "SET_SORT_BY",
+  SET_LOADING: "SET_LOADING",
 };
 
 const StateProvider = ({ children }) => {
@@ -40,6 +42,8 @@ const StateProvider = ({ children }) => {
         return { ...state, selectedFilters: action.payload };
       case actions.SET_SORT_BY:
         return { ...state, sortBy: action.payload };
+      case actions.SET_LOADING:
+        return { ...state, isLoading: action.payload };
       default:
         return state;
     }
