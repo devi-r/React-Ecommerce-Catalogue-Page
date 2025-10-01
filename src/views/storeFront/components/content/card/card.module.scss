@@ -15,14 +15,14 @@
     box-shadow: 0 2px 16px 4px rgb(40 44 63 / 7%);
   }
 
-  @media (max-width: 768px) {
+  @container layout-root (max-width: 768px) {
     box-shadow: 0 2px 16px 4px rgb(40 44 63 / 7%);
   }
   .imageWrapper {
     height: 280px;
     width: 100%;
     position: relative;
-    @media (max-width: 768px) {
+    @container layout-root (max-width: 768px) {
       height: 200px;
     }
     img {
@@ -179,7 +179,7 @@
         font-weight: 400;
         font-size: 12px;
         margin-left: 5px;
-        @media (max-width: 768px) {
+        @container layout-root (max-width: 768px) {
           display: none;
         }
       }
@@ -229,7 +229,7 @@
         &:hover {
           opacity: 0.8;
         }
-        @media (max-width: 768px) {
+        @container layout-root (max-width: 768px) {
           display: none;
         }
       }
@@ -237,7 +237,7 @@
       .textWrapper {
         display: flex;
         justify-content: space-between;
-        @media (max-width: 768px) {
+        @container layout-root (max-width: 768px) {
           display: unset;
         }
       }

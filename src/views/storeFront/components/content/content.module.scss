@@ -10,17 +10,17 @@
     grid-template-columns: repeat(5, 1fr);
 
     // Large tablet: 4 columns
-    @media (max-width: 1200px) {
+    @container layout-root (max-width: 1200px) {
       grid-template-columns: repeat(4, 1fr);
     }
 
     // Tablet: 3 columns
-    @media (max-width: 992px) {
+    @container layout-root (max-width: 992px) {
       grid-template-columns: repeat(3, 1fr);
     }
 
     // Small tablet: 2 columns
-    @media (max-width: 768px) {
+    @container layout-root (max-width: 768px) {
       grid-template-columns: repeat(2, 1fr);
     }
   }

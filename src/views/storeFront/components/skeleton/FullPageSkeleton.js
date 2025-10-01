@@ -1,10 +1,9 @@
 import React from "react";
 import styles from "../../storefront.module.scss";
-import contentStyles from "../content/content.module.scss";
 import {
   TitleSkeleton,
   FiltersSkeleton,
-  CardSkeleton,
+  ContentSkeleton,
   TopControlsSkeleton,
 } from "./index";
 
@@ -27,11 +26,7 @@ const FullPageSkeleton = () => {
           <TopControlsSkeleton />
 
           {/* Content Grid */}
-          <div className={`${contentStyles.container} ${contentStyles.grid}`}>
-            {Array.from({ length: 20 }).map((_, index) => (
-              <CardSkeleton key={index} />
-            ))}
-          </div>
+          <ContentSkeleton />
         </div>
       </div>
     </>

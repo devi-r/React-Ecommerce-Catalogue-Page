@@ -1,191 +1,201 @@
 import React, { useEffect, useState, useContext, useRef } from "react";
-import { PAGE_SIZE, GENDER } from "./Constants";
+import { PAGE_SIZE } from "./Constants";
 import { DataService } from "./DataService";
 import { usePrevious } from "./hooks/usePrevious";
 import { actions, context, withContext } from "./StoreFrontContext";
-import { isEmpty } from "./Utils";
 import StoreFrontView from "./StoreFrontView";
 
 const StoreFront = () => {
   const {
     state: {
-      allContent = [],
-      allFilteredContent = [],
       filtersData = {},
       selectedFilters = {},
       sortBy,
       isLoading = true,
+      isFiltersLoading = true,
+      isDataLoading = false,
+      error = null,
     },
     dispatch,
   } = useContext(context);
 
   const [showFilters, setShowFilters] = useState(false);
   const isInitialLoadRef = useRef(true);
-
   const prevSelectedFilters = usePrevious(selectedFilters);
 
-  const handleCurrentContent = (allData, page, pageSize = 20) => {
-    const newData = allData?.slice(
-      (page - 1) * pageSize,
-      (page - 1) * pageSize + pageSize
-    );
-    dispatch({ type: actions.SET_CURRENT_CONTENT, payload: newData });
+  // Clear error when starting new requests
+  const clearError = () => {
+    dispatch({ type: actions.CLEAR_ERROR });
   };
 
+  // Set error state
+  const setError = (error) => {
+    dispatch({ type: actions.SET_ERROR, payload: error });
+  };
+
+  // Fetch filters from backend API (only on initial load)
+  const fetchFilters = async () => {
+    try {
+      clearError();
+      dispatch({ type: actions.SET_FILTERS_LOADING, payload: true });
+
+      const filtersResponse = await DataService.getFilters();
+
+      dispatch({
+        type: actions.SET_FILTERS_DATA,
+        payload: { ...filtersData, filterItems: filtersResponse.data.data },
+      });
+
+      dispatch({ type: actions.SET_FILTERS_LOADING, payload: false });
+    } catch (error) {
+      console.error("Error fetching filters:", error);
+      setError({
+        message: "Failed to load filters. Please try again.",
+        type: "filters",
+        originalError: error,
+      });
+      dispatch({ type: actions.SET_FILTERS_LOADING, payload: false });
+    }
+  };
+
+  // Fetch data from backend API
+  const fetchData = async (page = 1, resetPage = false) => {
+    try {
+      clearError();
+
+      // Set loading states
+      if (isInitialLoadRef.current) {
+        dispatch({ type: actions.SET_LOADING, payload: true });
+      } else {
+        dispatch({ type: actions.SET_DATA_LOADING, payload: true });
+      }
+
+      // Prepare API parameters
+      const apiParams = {
+        page: resetPage ? 1 : page,
+        pageSize: PAGE_SIZE,
+      };
+
+      // Add gender filter
+      if (selectedFilters.gender) {
+        apiParams.gender = selectedFilters.gender;
+      }
+
+      // Add other filters
+      if (selectedFilters.category) {
+        apiParams.category = Array.isArray(selectedFilters.category)
+          ? selectedFilters.category.join(",")
+          : selectedFilters.category;
+      }
+
+      if (selectedFilters.brand) {
+        apiParams.brand = Array.isArray(selectedFilters.brand)
+          ? selectedFilters.brand.join(",")
+          : selectedFilters.brand;
+      }
+
+      if (selectedFilters.primaryColour) {
+        apiParams.color = Array.isArray(selectedFilters.primaryColour)
+          ? selectedFilters.primaryColour.join(",")
+          : selectedFilters.primaryColour;
+      }
+
+      if (selectedFilters.price) {
+        apiParams.price_range = Array.isArray(selectedFilters.price)
+          ? selectedFilters.price.join(",")
+          : selectedFilters.price;
+      }
+
+      if (selectedFilters.discount) {
+        apiParams.discount_range = selectedFilters.discount;
+      }
+
+      // Add sorting
+      if (sortBy.key) {
+        apiParams.sort = sortBy.key;
+      }
+
+      // Fetch items from backend
+      const response = await DataService.getItems(apiParams);
+      const { data, pagination, totalCount: total } = response.data;
+
+      // Update state with backend response
+      dispatch({ type: actions.SET_CURRENT_CONTENT, payload: data });
+      dispatch({ type: actions.SET_TOTAL_COUNT, payload: total });
+      dispatch({
+        type: actions.SET_CURRENT_PAGE,
+        payload: pagination.currentPage,
+      });
+
+      // Handle loading states
+      if (isInitialLoadRef.current) {
+        dispatch({ type: actions.SET_LOADING, payload: false });
+        isInitialLoadRef.current = false;
+      } else {
+        dispatch({ type: actions.SET_DATA_LOADING, payload: false });
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      setError({
+        message: "Failed to load products. Please try again.",
+        type: "data",
+        originalError: error,
+      });
+
+      if (isInitialLoadRef.current) {
+        dispatch({ type: actions.SET_LOADING, payload: false });
+      } else {
+        dispatch({ type: actions.SET_DATA_LOADING, payload: false });
+      }
+    }
+  };
+
+  // Retry function for error state
+  const handleRetry = () => {
+    if (isInitialLoadRef.current) {
+      fetchFilters();
+      fetchData(1, true);
+    } else {
+      fetchData(1, true);
+    }
+  };
+
+  // Effect for initial load - fetch both filters and data
   useEffect(() => {
     if (isInitialLoadRef.current) {
-      dispatch({ type: actions.SET_LOADING, payload: true });
+      fetchFilters();
+      fetchData(1, true);
     }
-    DataService.getAllData({ selectedFilters }).then((response) => {
-      const allData = selectedFilters?.gender
-        ? response?.data?.data
-        : response
-            ?.reduce((acc, item) => {
-              acc = acc.concat(item.data.data);
-              return acc;
-            }, [])
-            .filter((value, index, self) => {
-              return (
-                self.findIndex((v) => v.productId === value.productId) === index
-              );
-            })
-            .sort((a, b) =>
-              Number(a?.[sortBy.key]) - Number(b?.[sortBy.key]) > 0 ? -1 : 1
-            );
+  }, []);
 
-      dispatch({ type: actions.SET_TOTAL_COUNT, payload: allData?.length });
-      dispatch({ type: actions.SET_ALL_CONTENT, payload: allData });
-      dispatch({ type: actions.SET_ALL_FILTERED_CONTENT, payload: [] });
-      handleCurrentContent(allData, 1);
-
-      DataService.getFilters().then((response) => {
-        const itemTypes = allData?.reduce((acc, item) => {
-          if (!acc.category) {
-            acc.category = [];
-          }
-          if (!acc.brand) {
-            acc.brand = [];
-          }
-          acc.category.push({ id: item.category, value: item.category });
-          acc.brand.push({ id: item.brand, value: item.brand });
-
-          return acc;
-        }, {});
-
-        Object.keys(itemTypes).forEach((key) => {
-          itemTypes[key] = itemTypes[key].filter((value, index, self) => {
-            return self.findIndex((v) => v.id === value.id) === index;
-          });
-        });
-
-        const filterItems = response.data;
-
-        Object.keys(itemTypes).forEach((key) => {
-          filterItems[key].filterValues = itemTypes[key];
-        });
-
-        dispatch({
-          type: actions.SET_FILTERS_DATA,
-          payload: { ...filtersData, filterItems },
-        });
-        dispatch({
-          type: actions.SET_SELECTED_FILTERS,
-          payload: { gender: selectedFilters.gender },
-        });
-
-        // Add 2 second delay only for initial load
-        if (isInitialLoadRef.current) {
-          setTimeout(() => {
-            dispatch({ type: actions.SET_LOADING, payload: false });
-            isInitialLoadRef.current = false;
-          }, 2000);
-        }
-      });
-    });
-  }, [selectedFilters.gender]);
-
+  // Effect for filter changes - only fetch data
   useEffect(() => {
-    if (
-      JSON.stringify(prevSelectedFilters) !== JSON.stringify(selectedFilters)
-    ) {
-      const filterApplied =
-        !isEmpty(selectedFilters) &&
-        Object.values(selectedFilters)?.filter(
-          (e) => !isEmpty(e) && GENDER?.indexOf(e) < 0
-        )?.length !== 0;
+    // Skip initial render to avoid duplicate calls
+    if (!isInitialLoadRef.current) {
+      // Only fetch if filters actually changed
+      const filtersChanged =
+        JSON.stringify(prevSelectedFilters) !== JSON.stringify(selectedFilters);
 
-      if (filterApplied) {
-        let allData = [];
-
-        Object.keys(selectedFilters)?.forEach((key) => {
-          if (key !== "gender") {
-            let value = selectedFilters[key];
-            allData = allData.concat(
-              [...allContent]?.filter((item) => {
-                if (key !== "price" && key !== "discount") {
-                  return Array.isArray(value)
-                    ? value?.indexOf(item[key]) >= 0
-                    : value === item[key];
-                } else if (key === "discount") {
-                  const discountItem =
-                    filtersData?.filterItems?.discount?.filterValues?.find(
-                      (e) => e.id === value
-                    );
-                  const discountPercentage = (item.discount / item.mrp) * 100;
-
-                  return (
-                    discountPercentage >= discountItem.start &&
-                    discountPercentage < discountItem.end
-                  );
-                } else if (key === "price") {
-                  const priceItems = [];
-
-                  value?.forEach((valueKey) => {
-                    priceItems.push(
-                      filtersData?.filterItems?.price?.filterValues?.find(
-                        (e) => e.id === valueKey
-                      )
-                    );
-                  });
-
-                  return priceItems?.some(
-                    (priceItem) =>
-                      item.price >= priceItem.start &&
-                      item.price < priceItem.end
-                  );
-                }
-              })
-            );
-          }
-        });
-
-        dispatch({
-          type: actions.SET_ALL_FILTERED_CONTENT,
-          payload: allData,
-        });
-        dispatch({ type: actions.SET_TOTAL_COUNT, payload: allData?.length });
-        handleCurrentContent(allData, 1);
-      } else {
-        dispatch({
-          type: actions.SET_ALL_FILTERED_CONTENT,
-          payload: [],
-        });
-        dispatch({
-          type: actions.SET_TOTAL_COUNT,
-          payload: allContent?.length,
-        });
-        handleCurrentContent(allContent, 1);
+      if (filtersChanged) {
+        fetchData(1, true);
       }
     }
   }, [selectedFilters]);
 
+  // Effect for sort changes
+  useEffect(() => {
+    // Skip initial load - sort is already handled by filter effect
+    if (!isInitialLoadRef.current) {
+      fetchData(1, true);
+    }
+  }, [sortBy]);
+
+  // Page change
   const handlePageChange = (page) => {
-    const filterApplied =
-      !isEmpty(selectedFilters) &&
-      Object.values(selectedFilters)?.filter((e) => !isEmpty(e))?.length !== 0;
-    handleCurrentContent(filterApplied ? allFilteredContent : allContent, page);
+    fetchData(page, false);
   };
 
+  // Filter handling
   const handleFilterClick = (filterItem, value) => {
     dispatch({
       type: actions.SET_SELECTED_FILTERS,
@@ -197,57 +207,27 @@ const StoreFront = () => {
     dispatch({ type: actions.SET_SELECTED_FILTERS, payload: {} });
   };
 
+  // Sort handling
   const handleSortBy = (value) => {
-    const filterApplied =
-      !isEmpty(selectedFilters) &&
-      Object.values(selectedFilters)?.filter((e) => !isEmpty(e))?.length !== 0;
-
-    const sortedAllData = [...allContent]?.sort((a, b) =>
-      Number(a?.[value.key]) - Number(b?.[value.key]) > 0 ? -1 : 1
-    );
-    const sortedFilteredData = [...allFilteredContent]?.sort((a, b) =>
-      Number(a?.[value.key]) - Number(b?.[value.key]) > 0 ? -1 : 1
-    );
-
-    dispatch({
-      type: actions.SET_ALL_CONTENT,
-      payload: sortedAllData,
-    });
-    dispatch({
-      type: actions.SET_ALL_FILTERED_CONTENT,
-      payload: sortedFilteredData,
-    });
-
-    dispatch({
-      type: actions.SET_TOTAL_COUNT,
-      payload: filterApplied
-        ? sortedFilteredData?.length
-        : sortedAllData?.length,
-    });
-
     dispatch({
       type: actions.SET_SORT_BY,
       payload: value,
     });
-
-    handleCurrentContent(filterApplied ? sortedFilteredData : sortedAllData, 1);
-  };
-
-  const handleMobileFilters = () => {
-    setShowFilters((e) => !e);
   };
 
   return (
     <StoreFrontView
-      handlers={{
-        handlePageChange,
-        handleFilterClick,
-        handleFilterClearAll,
-        handleSortBy,
-        handleMobileFilters,
-      }}
       showFilters={showFilters}
+      setShowFilters={setShowFilters}
+      handleFilterClick={handleFilterClick}
+      handleFilterClearAll={handleFilterClearAll}
+      handleSortBy={handleSortBy}
+      handlePageChange={handlePageChange}
       isLoading={isLoading}
+      isFiltersLoading={isFiltersLoading}
+      isDataLoading={isDataLoading}
+      error={error}
+      onRetry={handleRetry}
     />
   );
 };

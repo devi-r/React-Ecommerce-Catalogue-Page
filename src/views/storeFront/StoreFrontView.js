@@ -6,18 +6,21 @@ import Content from "./components/content/Content";
 import { sortOptions } from "./Constants";
 import Pagination from "./components/pagination/Pagination";
 import { context } from "./StoreFrontContext";
-import { FullPageSkeleton } from "./components/skeleton";
+import { FullPageSkeleton, ContentSkeleton } from "./components/skeleton";
+import ErrorState from "./components/errorState/ErrorState";
 
 export const StoreFrontView = ({
-  handlers: {
-    handlePageChange = () => {},
-    handleFilterClick = () => {},
-    handleFilterClearAll = () => {},
-    handleSortBy = () => {},
-    handleMobileFilters = () => {},
-  },
+  handlePageChange = () => {},
+  handleFilterClick = () => {},
+  handleFilterClearAll = () => {},
+  handleSortBy = () => {},
+  handleMobileFilters = () => {},
   showFilters,
   isLoading = false,
+  isFiltersLoading = false,
+  isDataLoading = false,
+  error = null,
+  onRetry = () => {},
 }) => {
   const {
     state: {
@@ -28,6 +31,11 @@ export const StoreFrontView = ({
       sortBy = "",
     },
   } = useContext(context);
+
+  // Show error state if there's an error
+  if (error) {
+    return <ErrorState error={error} onRetry={onRetry} />;
+  }
 
   return (
     <div className={styles.container}>
@@ -43,6 +51,10 @@ export const StoreFrontView = ({
               handleFilterAction={handleFilterClearAll}
               isFilterPopup={true}
               handleCloseFilterPopup={handleMobileFilters}
+              loadingState={{
+                isLoading: isFiltersLoading,
+                loader: <div>Loading filters...</div>,
+              }}
             />
           ) : (
             <>
@@ -67,6 +79,10 @@ export const StoreFrontView = ({
                     selectedFilters={selectedFilters}
                     handleFilterClick={handleFilterClick}
                     handleFilterAction={handleFilterClearAll}
+                    loadingState={{
+                      isLoading: isFiltersLoading,
+                      loader: <div>Loading filters...</div>,
+                    }}
                   />
                 </div>
                 <div className={styles.rightContainer}>
@@ -81,7 +97,20 @@ export const StoreFrontView = ({
                       />
                     </div>
                   </div>
-                  <Content view="grid" data={currentContent} tag={sortBy} />
+                  {isDataLoading ? (
+                    <ContentSkeleton />
+                  ) : (
+                    <Content
+                      view="grid"
+                      data={currentContent}
+                      tag={
+                        sortBy.key === "trending" ||
+                        sortBy.key === "recommended"
+                          ? null
+                          : "showAllTags"
+                      }
+                    />
+                  )}
 
                   <Pagination
                     totalCount={totalCount}

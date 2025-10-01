@@ -14,10 +14,10 @@
   background-color: #fff;
   border: 1px solid #d4d5d9;
   text-align: left;
-  @media (max-width: 768px) {
+  @container layout-root (max-width: 768px) {
     width: 200px;
   }
-  @media (max-width: 320px) {
+  @container layout-root (max-width: 320px) {
     margin: 0 0 0 4px;
   }
 
@@ -86,7 +86,7 @@
         flex-direction: column;
         background-color: #f6f8fa;
         box-sizing: border-box;
-        @media (max-width: 768px) {
+        @container layout-root (max-width: 768px) {
           width: 200px;
         }
       }

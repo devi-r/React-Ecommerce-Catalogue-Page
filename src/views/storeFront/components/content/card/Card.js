@@ -1,5 +1,5 @@
 import styles from "./card.module.scss";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 
 const Card = ({ view: cardView = "grid", cardData = {}, tag = null }) => {
   const {
@@ -12,7 +12,50 @@ const Card = ({ view: cardView = "grid", cardData = {}, tag = null }) => {
     sizes = "",
     rating = null,
     ratingCount = null,
+    isFastFashion = false,
+    isPersonalised = false,
   } = cardData;
+
+  // Determine what tags should be shown based on current sort
+  const getTagFieldValue = () => {
+    if (!tag) return false;
+
+    // If tag is "showAllTags", show trending/recommended tags
+    if (tag === "showAllTags") {
+      return isFastFashion || isPersonalised;
+    }
+
+    // For specific tag keys, show based on field values
+    if (tag?.key) {
+      switch (tag.key) {
+        case "trending":
+          return isFastFashion;
+        case "recommended":
+          return isPersonalised;
+        default:
+          return false;
+      }
+    }
+
+    return false;
+  };
+
+  // Get the appropriate tag label
+  const getTagLabel = () => {
+    if (!tag) return "";
+
+    if (tag === "showAllTags") {
+      if (isFastFashion && isPersonalised) {
+        return "Trending & Recommended";
+      } else if (isFastFashion) {
+        return "Trending";
+      } else if (isPersonalised) {
+        return "Recommended";
+      }
+    }
+
+    return tag?.label || "";
+  };
 
   const discountPercentage = ((discount / mrp) * 100).toFixed(0);
   const [showWishlist, setShowWishlist] = useState(false);
@@ -32,8 +75,8 @@ const Card = ({ view: cardView = "grid", cardData = {}, tag = null }) => {
       onMouseLeave={handleMouseLeave}
     >
       <div className={styles.imageWrapper}>
-        {cardData?.[tag?.key] ? (
-          <div className={styles.tag}>{tag?.label}</div>
+        {getTagFieldValue() ? (
+          <div className={styles.tag}>{getTagLabel()}</div>
         ) : null}
 
         <img src={searchImage} />

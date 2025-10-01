@@ -4,7 +4,7 @@
   margin: 12px auto 0;
   max-width: 1600px;
   overflow-x: hidden;
-  @media (max-width: 768px) {
+  @container layout-root (max-width: 768px) {
     margin: 0;
   }
 
@@ -12,7 +12,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    @media (max-width: 768px) {
+    @container layout-root (max-width: 768px) {
       margin: 0;
       padding: 24px 16px;
     }
@@ -25,7 +25,7 @@
       color: #ffffff;
       font-weight: bold;
       padding: 4px 0;
-      @media (min-width: 769px) {
+      @container layout-root (min-width: 769px) {
         display: none;
       }
     }
@@ -34,7 +34,7 @@
   .title {
     display: flex;
     margin: 10px 0 5px 25px;
-    @media (max-width: 768px) {
+    @container layout-root (max-width: 768px) {
       margin: 0;
     }
     .text {
@@ -63,14 +63,14 @@
       max-width: 252px;
       padding-top: 23px;
 
-      @media (max-width: 768px) {
+      @container layout-root (max-width: 768px) {
         display: none;
       }
     }
     .rightContainer {
       width: calc(100% - 268px);
       padding-right: 16px;
-      @media (max-width: 768px) {
+      @container layout-root (max-width: 768px) {
         padding: 16px;
         width: 100%;
       }
