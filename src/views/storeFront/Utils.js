@@ -2,7 +2,7 @@ export function isEmpty(obj) {
   if (obj !== null && obj !== undefined) {
     // for general objects
     if (typeof obj === "string") {
-      if (obj.trim() === "" || obj == "null") {
+      if (obj.trim() === "" || obj === "null") {
         // for string
         return true;
       }

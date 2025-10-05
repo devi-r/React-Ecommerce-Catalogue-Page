@@ -7,16 +7,14 @@
   color: #282c3f;
   cursor: pointer;
   position: relative;
-  width: 255px;
+  width: fit-content;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
   border-radius: 2px;
   background-color: #fff;
   border: 1px solid #d4d5d9;
   text-align: left;
-  @container layout-root (max-width: 768px) {
-    width: 200px;
-  }
+
   @container layout-root (max-width: 320px) {
     margin: 0 0 0 4px;
   }

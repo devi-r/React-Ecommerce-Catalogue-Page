@@ -20,7 +20,7 @@ const CheckBox = ({
         multiSelect: [],
       });
     }
-  }, [list]);
+  }, [list, prevList]);
 
   const handleMultiClick = (item) => {
     let index = state.multiSelect.indexOf(item);

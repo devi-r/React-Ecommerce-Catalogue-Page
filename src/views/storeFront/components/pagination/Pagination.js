@@ -168,6 +168,7 @@ const Pagination = ({
     newState.startIndex = findStartIndex(newState);
     newState.pagesToShow = getPages(newState);
     setState(newState);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [totalCount, pagesLength, elementPerPage, paginationIndexStart]);
 
   const onPageChange = (pageObject) => {

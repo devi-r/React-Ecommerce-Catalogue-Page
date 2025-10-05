@@ -79,7 +79,14 @@ const Card = ({ view: cardView = "grid", cardData = {}, tag = null }) => {
           <div className={styles.tag}>{getTagLabel()}</div>
         ) : null}
 
-        <img src={searchImage} />
+        <img
+          src={searchImage}
+          alt={`${brand} ${product}`}
+          loading="lazy"
+          onError={(e) => {
+            e.target.style.display = "none";
+          }}
+        />
 
         {rating && ratingCount && !showWishlist ? (
           <div className={styles.ratingsContainer}>

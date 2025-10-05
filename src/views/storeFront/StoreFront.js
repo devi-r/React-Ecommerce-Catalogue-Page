@@ -166,6 +166,7 @@ const StoreFront = () => {
       fetchFilters();
       fetchData(1, true);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Effect for filter changes - only fetch data
@@ -180,6 +181,7 @@ const StoreFront = () => {
         fetchData(1, true);
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedFilters]);
 
   // Effect for sort changes
@@ -188,6 +190,7 @@ const StoreFront = () => {
     if (!isInitialLoadRef.current) {
       fetchData(1, true);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sortBy]);
 
   // Page change
@@ -218,7 +221,7 @@ const StoreFront = () => {
   return (
     <StoreFrontView
       showFilters={showFilters}
-      setShowFilters={setShowFilters}
+      handleMobileFilters={() => setShowFilters((e) => !e)}
       handleFilterClick={handleFilterClick}
       handleFilterClearAll={handleFilterClearAll}
       handleSortBy={handleSortBy}
